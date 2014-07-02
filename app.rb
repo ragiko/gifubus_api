@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require "json"
-require 'active_support/core_ext'
+require 'active_support'
 require 'nokogiri'
 require 'open-uri'
 require 'uri'
