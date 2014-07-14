@@ -3,11 +3,19 @@
 require 'rubygems'
 require 'sinatra'
 require "json"
-require 'active_support'
+#require 'active_support'
 require 'nokogiri'
 require 'open-uri'
 require 'uri'
 require 'pp'
+
+def blank?(obj) 
+  if obj.nil? or obj.empty?
+    return true 
+  else
+    return false 
+  end
+end
 
 get '/error' do
   "bad query"
@@ -15,17 +23,17 @@ end
 
 get '/' do
 
-	date = params['data']
+	date = params['date']
   time = params['time']
   start_arrive = params['start_arrive']
   start_name = params['start_name']
   arrive_name = params['arrive_name']
 
   # エラー処理
-  if (date.blank? || time.blank? || start_arrive.blank? || start_name.blank? || arrive_name.blank?)
-  	redirect 'error'
+  if (blank?(date) or blank?(time) or blank?(start_arrive) or blank?(start_name) or blank?(arrive_name))
+      redirect 'error'
   end
-
+    
 	# クエリ
 	q = {
 		date: date, 				# 日付
@@ -55,7 +63,9 @@ EOS
 
 	doc = Nokogiri::HTML(open(URI.encode(url)))
 
-	routes = []
+	# 初めにkey = dataを付ける 
+	routes_hash = { data: [] }
+	routes = routes_hash[:data]
 
 	for i in 1..3
 		doc.xpath("//div[@id='ctl00_ContentPlaceHolder1_Usc_RouteG#{i}_UpdtPnl_Route']").each do |route|
@@ -108,7 +118,7 @@ EOS
 				info.push ({
 					start_name: start_name,							# 出発駅名
 					start_time: start_time,							# 出発時刻
-					details: details,  									# 詳細
+					details: details.join(","),  									# 詳細
 					between_minutes: between_minutes, 	# 乗車時間
 					fare: fare,													# 料金
 					arrive_name: arrive_name,						# 到着駅名
@@ -121,5 +131,6 @@ EOS
 	end
 
   content_type :json
-	routes.to_json
+	routes_hash.to_json
 end
+
