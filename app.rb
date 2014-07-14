@@ -118,7 +118,7 @@ EOS
 				info.push ({
 					start_name: start_name,							# 出発駅名
 					start_time: start_time,							# 出発時刻
-					details: details.join(","),  									# 詳細
+					details: details,  									# 詳細
 					between_minutes: between_minutes, 	# 乗車時間
 					fare: fare,													# 料金
 					arrive_name: arrive_name,						# 到着駅名
