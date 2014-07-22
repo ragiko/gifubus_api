@@ -3,7 +3,6 @@
 require 'rubygems'
 require 'sinatra'
 require "json"
-#require 'active_support'
 require 'nokogiri'
 require 'open-uri'
 require 'uri'
@@ -21,6 +20,10 @@ get '/error' do
   "bad query"
 end
 
+error do 
+  redirect 'error'
+end
+
 get '/' do
 
 	date = params['date']
@@ -31,9 +34,9 @@ get '/' do
 
   # エラー処理
   if (blank?(date) or blank?(time) or blank?(start_arrive) or blank?(start_name) or blank?(arrive_name))
-      redirect 'error'
+      #redirect 'error'
   end
-    
+
 	# クエリ
 	q = {
 		date: date, 				# 日付
@@ -115,6 +118,14 @@ EOS
 				details << route.css("#ctl00_ContentPlaceHolder1_Usc_RouteG#{i}_Usc_RouteDetailInfo#{label}_Lbl_RosenName").text
 				details << route.css("#ctl00_ContentPlaceHolder1_Usc_RouteG#{i}_Usc_RouteDetailInfo#{label}_Lbl_KeitouInformation").text
 
+        # 出発地図URL と 到着地図URL
+        gifubus_original_host_url = "http://navi.gifubus.co.jp"
+				start_map_url = route.css("#ctl00_ContentPlaceHolder1_Usc_RouteG#{i}_Usc_RouteDetailInfo#{label}_LnkBtn_OnStationMap").attribute("onclick").value
+        arrive_map_url = route.css("#ctl00_ContentPlaceHolder1_Usc_RouteG#{i}_Usc_RouteDetailInfo#{label}_LnkBtn_OffStationMap").attribute("onclick").value
+
+        start_map_url = gifubus_original_host_url + start_map_url.match(/.(\/.*?)\'/)[1]
+        arrive_map_url = gifubus_original_host_url + arrive_map_url.match(/.(\/.*?)\'/)[1]
+
 				info.push ({
 					start_name: start_name,							# 出発駅名
 					start_time: start_time,							# 出発時刻
@@ -122,7 +133,9 @@ EOS
 					between_minutes: between_minutes, 	# 乗車時間
 					fare: fare,													# 料金
 					arrive_name: arrive_name,						# 到着駅名
-					arrive_time: arrive_time 						# 到着時刻
+					arrive_time: arrive_time, 					# 到着時刻
+					start_map_url: start_map_url, 		  # 出発地図URL
+					arrive_map_url: arrive_map_url      # 到着地図URL
 				})
 			end
 
