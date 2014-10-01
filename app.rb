@@ -48,9 +48,7 @@ get '/' do
 
 	url = <<"EOS"
 http://navi.gifubus.co.jp/Frm_0160.aspx\
-?ge=t3_1kv_4nz_5fr_67j\
-&id=1qc346\
-&ia=1qc31f\
+?ge=t5_1kx_4o1_5ft_67l\
 &d=1\
 &t=#{q[:time]}\
 &a=#{q[:start_arrive]}\
@@ -63,6 +61,11 @@ http://navi.gifubus.co.jp/Frm_0160.aspx\
 &inpt=#{q[:time]}\
 &inpa=#{q[:start_arrive]}
 EOS
+
+  # 以前のリクエスト
+  # ?ge=t3_1kv_4nz_5fr_67j\
+  # &id=1qc346\
+  # &ia=1qc31f\
 
 	doc = Nokogiri::HTML(open(URI.encode(url)))
 
