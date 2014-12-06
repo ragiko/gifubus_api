@@ -46,9 +46,11 @@ get '/' do
 		arrive_name: arrive_name, 		# 到着駅名
 	}
 
+  ge = "t6_1ky_4o2_5fu_67m"
+
 	url = <<"EOS"
 http://navi.gifubus.co.jp/Frm_0160.aspx\
-?ge=t5_1kx_4o1_5ft_67l\
+?ge=#{ge}\
 &d=1\
 &t=#{q[:time]}\
 &a=#{q[:start_arrive]}\
